@@ -10,6 +10,8 @@ def findXY(latitude, longitude):
 class Leaf:
     def __init__(self, cord, type = None, subtype = None, name = None, adress = None):
         self.cord = cord
+        self.x = cord[0]
+        self.y = cord[1]
         self.type = type
         self.subtype = subtype
         self.name = name
@@ -37,6 +39,8 @@ class Node:
 class RTree:
     def __init__(self, cord, h, w, deapth, dots):
         self.cord = cord
+        self.x = cord[0]
+        self.y = cord[1]
         self.north = (cord[0], cord[1] + h)  # верх
         self.south = (cord[0], cord[1] - h)  # низ
         self.west =  (cord[0] - w, cord[1])  # лево
@@ -52,42 +56,38 @@ class RTree:
         # если нет корня, то дерево поделено уже и нужно точку добавить в одну из следующик коробок
         if self.root == None:
             if self.deapth % 2:
-                if self.west[0] < leaf.cord[0] and self.cord[0] > leaf.cord[0]:
+                if self.x - self.w < leaf.x and self.x > leaf.x:
                     self.children[0].add(leaf)
                 else:
                     self.children[1].add(leaf)
             else:
-                if self.north[1] > leaf.cord[1] and self.cord[1] < leaf.cord[1]:
+                if self.y + self.h > leaf.y and self.y < leaf.y:
                     self.children[0].add(leaf)
                 else:
                     self.children[1].add(leaf)
         # если количество точек больше пяти, то делим коробку на 2 части и добавляем туда точки
         elif self.dots > 5:
-            if self.root.deapth % 2:
-                cords1 = ((self.cord[0] + self.west[0]) / 2, self.cord[1])
-                cords2 = ((self.cord[0] + self.east[0]) / 2, self.cord[1])
-                self.children[0] = RTree(cords1, self.w / 2, self.h, self.deapth + 1, 0)
-                self.children[1] = RTree(cords2, self.w / 2, self.h, self.deapth + 1, 0)
+            if self.deapth % 2:
+                self.children[0] = RTree(((self.x - self.w) / 2, self.y), self.w / 2, self.h, self.deapth + 1, 0)
+                self.children[1] = RTree(((self.x + self.w) / 2, self.y), self.w / 2, self.h, self.deapth + 1, 0)
                 for i in self.root.leafes:
-                    if i.cord[0] > self.cord[0]:
+                    if i.x > self.x:
                         self.children[0].add(i)
                     else:
                         self.children[1].add(i)
-                if self.west[0] < leaf.cord[0] and self.cord[0] > leaf.cord[0]:
+                if self.x - self.w < leaf.x and self.x > leaf.x:
                     self.children[0].add(leaf)
                 else:
                     self.children[1].add(leaf)
             else:
-                cords1 = (self.cord[0], (self.cord[1] + self.north[1]) / 2)
-                cords2 = (self.cord[0], (self.cord[1] + self.south[1]) / 2)
-                self.children[0] = RTree(cords1, self.root.w, self.root.h / 2, self.root.deapth + 1, 0)
-                self.children[1] = RTree(cords2, self.root.w, self.root.h / 2, self.root.deapth + 1, 0)
+                self.children[0] = RTree((self.x, (self.y + self.h) / 2), self.w, self.h / 2, self.root.deapth + 1, 0)
+                self.children[1] = RTree((self.x, (self.y - self.h) / 2), self.w, self.h / 2, self.root.deapth + 1, 0)
                 for i in self.root.leafes:
-                    if i.cord[1] > self.cord[1]:
+                    if i.y > self.y:
                         self.children[0].add(i)
                     else:
                         self.children[1].add(i)
-                if self.north[1] > leaf.cord[1] and self.cord[1] < leaf.cord[1]:
+                if self.y + self.h > leaf.y and self.y < leaf.y:
                     self.children[0].add(leaf)
                 else:
                     self.children[1].add(leaf)
@@ -104,7 +104,6 @@ tree = RTree((0, 0), 6372, 6372, 1, 0)
 
 f = open('ukraine_poi.csv')
 for line in f:
-    i += 1
     info = line.split(';')
     leaf = Leaf(findXY(float(line[0]), float(line[1])), line[2], line[3], line[4], line[5])
     tree.add(leaf)
