@@ -75,14 +75,19 @@ class RTree:
                 self.children[1] = RTree((self.x, (self.y - self.h) / 2), self.w, self.h / 2, self.deapth + 1)
                 for i in self.leafes:
                     if i.y > self.y:
-                        self.children[0].add(i)
+                        self.children[0].leafes.append(i)
+                        self.children[0].dots += 1
                     else:
-                        self.children[1].add(i)
+                        self.children[1].leafes.append(i)
+                        self.children[1].dots += 1
                 if self.y + self.h > leaf.y and self.y < leaf.y:
-                    self.children[0].add(leaf)
+                    self.children[0].leafes.append(leaf)
+                    self.children[0].dots += 1
                 else:
-                    self.children[1].add(leaf)
+                    self.children[1].leafes.append(leaf)
+                    self.children[1].dots += 1
             self.divided = True
+            self.leafes = []
         # иначе добавить листок в текущюю ноду
         else:
             self.leafes.append(leaf)
