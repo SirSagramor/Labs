@@ -52,55 +52,52 @@ class Node:
                         else:
                             temp = temp.children[1]
             # если в ноде в которую нужно добавить, больше 100 точек, делим ее на 2 части, добавляя в эти ноды листья
-            if temp.dots > 100:
+            if temp.dots == 100:
                 if temp.depth % 2:
-                    temp.children[0] = Node(((temp.x - temp.w) / 2, temp.y), temp.w / 2, temp.h, temp.depth + 1)
-                    temp.children[1] = Node(((temp.x + temp.w) / 2, temp.y), temp.w / 2, temp.h, temp.depth + 1)
-                    iterator()
                     temp.leafes.sort(key=lambda x: temp.x)
-                    for i in range(len(temp.leafes)):
-                        if temp.leafes[i].x > temp.x:
-                            temp.children[0].leafes = temp.leafes[:i]
-                            temp.children[0].dots += i
-                            temp.children[1].leafes = temp.leafes[i:]
-                            temp.children[1].dots += 101 - i
-                            if temp.x > leaf.x:
-                                temp.children[0].leafes.append(leaf)
-                                temp.children[0].dots += 1
-                            else:
-                                temp.children[1].leafes.append(leaf)
-                                temp.children[1].dots += 1
-                            break
-                else:
-                    temp.children[0] = Node((temp.x, (temp.y + temp.h) / 2), temp.w, temp.h / 2, temp.depth + 1)
-                    temp.children[1] = Node((temp.x, (temp.y - temp.h) / 2), temp.w, temp.h / 2, temp.depth + 1)
+                    mid = (temp.leafes[50].x + temp.leafes[51].x) / 2
+                    temp.children[0] = Node(((mid + temp.x - temp.w) / 2, temp.y), (mid + temp.x - temp.w) / 2 - (temp.x - temp.w), temp.h, temp.depth + 1)
+                    temp.children[1] = Node(((mid + temp.x + temp.w) / 2, temp.y), (temp.x + temp.w) - (mid + temp.x + temp.w) / 2, temp.h, temp.depth + 1)
                     iterator()
+                    temp.children[0].leafes = temp.leafes[:50]
+                    temp.children[1].leafes = temp.leafes[50:]
+                    temp.children[0].dots += 50
+                    temp.children[1].dots += 50
+                    if temp.x > leaf.x:
+                        temp.children[0].leafes.append(leaf)
+                        temp.children[0].dots += 1
+                    else:
+                        temp.children[1].leafes.append(leaf)
+                        temp.children[1].dots += 1
+                else:
                     temp.leafes.sort(key=lambda y: temp.y)
-                    for i in range(len(temp.leafes)):
-                        if temp.leafes[i].y > temp.y:
-                            temp.children[1].leafes = temp.leafes[:i]
-                            temp.children[1].dots += i
-                            temp.children[0].leafes = temp.leafes[i:]
-                            temp.children[0].dots += 101 - i
-                            if temp.y < leaf.y:
-                                temp.children[0].leafes.append(leaf)
-                                temp.children[0].dots += 1
-                            else:
-                                temp.children[1].leafes.append(leaf)
-                                temp.children[1].dots += 1
-                            break
+                    mid = (temp.leafes[50].y + temp.leafes[51].y) / 2
+                    temp.children[0] = Node((temp.x, (mid + temp.y + temp.h) / 2), temp.w, (temp.y + temp.h) - (mid + temp.y + temp.h) / 2, temp.depth + 1)
+                    temp.children[1] = Node((temp.x, (mid + temp.y - temp.h) / 2), temp.w, (mid + temp.y - temp.h) / 2 - (temp.y - temp.h), temp.depth + 1)
+                    iterator()
+                    temp.children[0].leafes = temp.leafes[:50]
+                    temp.children[1].leafes = temp.leafes[50:]
+                    temp.children[0].dots += 50
+                    temp.children[1].dots += 50
+                    if temp.y < leaf.y:
+                        temp.children[0].leafes.append(leaf)
+                        temp.children[0].dots += 1
+                    else:
+                        temp.children[1].leafes.append(leaf)
+                        temp.children[1].dots += 1
                 temp.divided = True
                 temp.leafes = []
             else:
                 temp.leafes.append(leaf)
                 temp.dots += 1
-        #если в корне меньше 100 точек, то просто их добавляем
-        elif self.dots <= 100:
+        #если в корне меньше 99 точек, то просто их добавляем
+        elif self.dots < 99:
             self.leafes.append(leaf)
             self.dots += 1
         # иначе ставим корень деленным и добавляем листок
         else:
             self.leafes.append(leaf)
+            self.dots += 1
             self.divided = True
 
     def __init__(self, cord, h, w, depth):
@@ -115,7 +112,7 @@ class Node:
         self.leafes = []
 
 
-    #тут нужно написать код..(
+    #тут нужно написать код
     def findCord(self, cord, R, out):
         x = cord[0]
         y = cord[1]
@@ -143,11 +140,7 @@ for line in f:
         tree.add(leaf)
     except ValueError:
         print("Value error on line:", i)
-    # print(i)
-    # print(leaf)
-    # if i > 10000:
-    #     break
-cProfile.run("make_counter()")
+# cProfile.run("tree.add(leaf)")
 print("Количество нод:", iterator())
 print("Строк всего:", i)
 f.close()
