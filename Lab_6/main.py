@@ -1,6 +1,7 @@
 import math
+import time
 import cProfile
-
+start_time = time.time()
 # x, y - координаты искомой точки, х1, у1 - координаты центра круга, R - радиус
 def dotInCircle(x, y, x1, y1, R):
     if ((x - x1) ** 2 + (y - y1) ** 2) <= R ** 2:
@@ -61,7 +62,7 @@ class Node:
                             temp = temp.children[0]
                         else:
                             temp = temp.children[1]
-            # если в ноде в которую нужно добавить, больше 100 точек, делим ее на 2 части, добавляя в эти ноды листья
+            # если в ноде в которую нужно добавить, больше n точек, делим ее на 2 части, добавляя в эти ноды листья
             if temp.dots == temp.n:
                 if temp.depth % 2:
                     temp.leafes.sort(key=lambda x: temp.x)
@@ -100,7 +101,7 @@ class Node:
             else:
                 temp.leafes.append(leaf)
                 temp.dots += 1
-        #если в корне меньше 99 точек, то просто их добавляем
+        #если в корне меньше n - 1 точек, то просто их добавляем
         elif self.dots < self.n - 1:
             self.leafes.append(leaf)
             self.dots += 1
@@ -125,7 +126,7 @@ class Node:
             else:
                 pass
 
-tree = Node((0, -5109), 6372, 1300, 1, 100)
+tree = Node((0, -5109), 6372, 1300, 1, 200)
 f = open('ukraine_poi.csv')
 i, out = 0, []
 for line in f:
@@ -141,4 +142,5 @@ for line in f:
 # cProfile.run("tree.add(leaf)")
 print("\nКоличество нод:", iterator())
 print("Строк всего:", i)
+print("Время работы: %s секунд" % (round(time.time() - start_time, 2)))
 f.close()
