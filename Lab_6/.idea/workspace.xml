@@ -10,15 +10,15 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/Lab_6$main.coverage" NAME="main Coverage Results" MODIFIED="1527893204200" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Lab_6$main.coverage" NAME="main Coverage Results" MODIFIED="1527894176385" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1710">
-              <caret line="114" column="27" lean-forward="true" selection-start-line="114" selection-start-column="27" selection-end-line="114" selection-end-column="27" />
+            <state relative-caret-position="1944">
+              <caret line="127" column="42" lean-forward="false" selection-start-line="127" selection-start-column="42" selection-end-line="127" selection-end-column="42" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
                 <element signature="e#147#229#0" expanded="false" />
@@ -245,8 +245,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1710">
-          <caret line="114" column="27" lean-forward="true" selection-start-line="114" selection-start-column="27" selection-end-line="114" selection-end-column="27" />
+        <state relative-caret-position="1944">
+          <caret line="127" column="42" lean-forward="false" selection-start-line="127" selection-start-column="42" selection-end-line="127" selection-end-column="42" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
             <element signature="e#147#229#0" expanded="false" />
