@@ -1,5 +1,6 @@
 import math
 import time
+import queue
 import cProfile
 start_time = time.time()
 # x, y - координаты искомой точки, х1, у1 - координаты центра круга, R - радиус
@@ -8,7 +9,23 @@ def dotInCircle(x, y, x1, y1, R):
         return True
     return False
 
-# нахождение координат по долготе и широте
+# x, y - центр круга, R - радиус ,х1, у1 - правый верхний угол прямоугольника, х2, y2 - левый нижний
+def circleInRect(x, y, R, x1, y1, x2, y2):
+    if  (x > x1 - R and x < x2 + R and y1 > y > y2) or \
+        (y > y2 - R and y < y1 + R and x1 > x > x2) or \
+        ((x1 - x)**2 + (y1 - y)**2 < R**2) or \
+        ((x1 - x)**2 + (y2 - y)**2 < R**2) or \
+        ((x2 - x)**2 + (y1 - y)**2 < R**2) or \
+        ((x2 - x)**2 + (y2 - y)**2 < R**2):
+        return True
+    return  False
+
+
+
+
+    # нахождение координат по долготе и широте
+
+# находит координаты по долготе и широте
 def findXY(latitude, longitude):
     return 6371 * math.cos(latitude) * math.cos(longitude), 6371 * math.cos(latitude) * math.sin(longitude)
 
@@ -31,7 +48,7 @@ class Leaf:
         self.name = name
         self.adress = adress
     def __str__(self):
-        return 'Node: [x: %f, y: %f, type: %s, subtype: %s, name: %s, adress: %s' % (self.x, self.y, self.type, self.subtype, self.name, self.adress)
+        return 'Node: [x: %f, y: %f, type: %s, subtype: %s, name: %s, adress: %s]' % (self.x, self.y, self.type, self.subtype, self.name, self.adress)
 
 class Node:
     def __init__(self, cord, h, w, depth, n):
@@ -111,24 +128,28 @@ class Node:
             self.dots += 1
             self.divided = True
 
-    #тут нужно написать код
-    def findCord(self, cord, R, out):
+    def findCord(self, cord, R, type):
         x = cord[0]
         y = cord[1]
-        if self.depth % 2:
-            if self.x - self.w < x and self.x > x:
-                pass
+        out = []
+        q = queue.Queue()
+        q.put(self)
+        while not q.empty():
+            temp = q.get()
+            if temp.divided:
+                if circleInRect(x, y, R, temp.children[0].x + temp.children[0].w, temp.children[0].y + temp.children[0].h,
+                                temp.children[0].x - temp.children[0].w, temp.children[0].y - temp.children[0].h):
+                    q.put(temp.children[0])
+                if circleInRect(x, y, R, temp.children[1].x + temp.children[1].w, temp.children[1].y + temp.children[1].h,
+                                temp.children[1].x - temp.children[1].w, temp.children[1].y - temp.children[1].h):
+                    q.put(temp.children[1])
             else:
-                pass
-        else:
-            if self.y + self.h > y and self.y < y:
-                pass
-            else:
-                pass
+                out += [el for el in temp.leafes if dotInCircle(x, y, el.x, el.y, R) and el.type == type]
+        return out
 
 tree = Node((0, -5109), 6372, 1300, 1, 200)
 f = open('ukraine_poi.csv')
-i, out = 0, []
+i = 0
 for line in f:
     i += 1
     info = line.split(';')
@@ -139,7 +160,16 @@ for line in f:
         tree.add(leaf)
     except ValueError:
         print("Value error on line:", i)
+
+out = tree.findCord(findXY(49.94257, 36.31512), 20, "shop")
+for el in out:
+    print(el)
+
+# (50.45130913, 30.45735345)
+
+# Node: (49.94257, 36.31512)[x: 1122.067109, y: -5936.606923, type: shop, subtype: convenience, name: , adress:]
 # cProfile.run("tree.add(leaf)")
+
 print("\nКоличество нод:", iterator())
 print("Строк всего:", i)
 print("Время работы: %s секунд" % (round(time.time() - start_time, 2)))
