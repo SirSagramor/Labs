@@ -82,7 +82,7 @@ class Node:
             # если в ноде в которую нужно добавить, больше n точек, делим ее на 2 части, добавляя в эти ноды листья
             if temp.dots == temp.n:
                 if temp.depth % 2:
-                    temp.leafes.sort(key=lambda x: temp.x)
+                    temp.leafes.sort(key=lambda x: x.x)
                     mid = (temp.leafes[temp.n // 2 - 1].x + temp.leafes[temp.n // 2].x) / 2
                     temp.children[0] = Node(((mid + temp.x - temp.w) / 2, temp.y), (mid + temp.x - temp.w) / 2 - (temp.x - temp.w), temp.h, temp.depth + 1, temp.n)
                     temp.children[1] = Node(((mid + temp.x + temp.w) / 2, temp.y), (temp.x + temp.w) - (mid + temp.x + temp.w) / 2, temp.h, temp.depth + 1, temp.n)
@@ -91,23 +91,23 @@ class Node:
                     temp.children[1].leafes = temp.leafes[temp.n // 2:]
                     temp.children[0].dots += temp.n // 2
                     temp.children[1].dots += temp.n // 2
-                    if temp.x > leaf.x:
+                    if mid > leaf.x:
                         temp.children[0].leafes.append(leaf)
                         temp.children[0].dots += 1
                     else:
                         temp.children[1].leafes.append(leaf)
                         temp.children[1].dots += 1
                 else:
-                    temp.leafes.sort(key=lambda y: temp.y)
+                    temp.leafes.sort(key=lambda y: y.y)
                     mid = (temp.leafes[temp.n // 2 - 1].y + temp.leafes[temp.n // 2].y) / 2
                     temp.children[0] = Node((temp.x, (mid + temp.y + temp.h) / 2), temp.w, (temp.y + temp.h) - (mid + temp.y + temp.h) / 2, temp.depth + 1, temp.n)
                     temp.children[1] = Node((temp.x, (mid + temp.y - temp.h) / 2), temp.w, (mid + temp.y - temp.h) / 2 - (temp.y - temp.h), temp.depth + 1, temp.n)
                     iterator()
-                    temp.children[0].leafes = temp.leafes[:temp.n // 2]
-                    temp.children[1].leafes = temp.leafes[temp.n // 2:]
+                    temp.children[0].leafes = temp.leafes[temp.n // 2:]
+                    temp.children[1].leafes = temp.leafes[:temp.n // 2]
                     temp.children[0].dots += temp.n // 2
                     temp.children[1].dots += temp.n // 2
-                    if temp.y < leaf.y:
+                    if mid < leaf.y:
                         temp.children[0].leafes.append(leaf)
                         temp.children[0].dots += 1
                     else:
@@ -161,7 +161,9 @@ for line in f:
     except ValueError:
         print("Value error on line:", i)
 
+
 out = tree.findCord(findXY(49.94257, 36.31512), 20, "shop")
+out.sort(key=lambda x: x.x)
 for el in out:
     print(el)
 
