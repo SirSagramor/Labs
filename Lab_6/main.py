@@ -42,13 +42,13 @@ def circleInRect(cordCircle, cordRect, h, w, R):
 def findXY(latitude, longitude):
     return 6371 * math.cos(latitude) * math.cos(longitude), 6371 * math.cos(latitude) * math.sin(longitude)
 
-# iterator Nodes
+# iterator
 def make_counter():
-    i = 1
+    i = 0
 
     def counter():  # counter() is a closure
         nonlocal i
-        i += 2
+        i += 1
         return i
 
     return counter
@@ -111,7 +111,6 @@ class RTree():
                 x1 = (mid + temp.x + temp.w) / 2
                 temp.children[0] = Node((x0, temp.y), temp.h, x0 - (temp.x - temp.w), temp.depth + 1, temp.n)
                 temp.children[1] = Node((x1, temp.y), temp.h, (temp.x + temp.w) - x1, temp.depth + 1, temp.n)
-                iterator()
                 temp.children[0].leafes = temp.leafes[:temp.n // 2]
                 temp.children[1].leafes = temp.leafes[temp.n // 2:]
                 temp.children[0].dots += temp.n // 2
@@ -129,7 +128,6 @@ class RTree():
                 y1 = (mid + temp.y - temp.h) / 2
                 temp.children[0] = Node((temp.x, y0), (temp.y + temp.h) - y0, temp.w, temp.depth + 1, temp.n)
                 temp.children[1] = Node((temp.x, y1), y1 - (temp.y - temp.h), temp.w, temp.depth + 1, temp.n)
-                iterator()
                 temp.children[0].leafes = temp.leafes[temp.n // 2:]
                 temp.children[1].leafes = temp.leafes[:temp.n // 2]
                 temp.children[0].dots += temp.n // 2
@@ -172,20 +170,20 @@ if __name__ == '__main__':
 
     tree = RTree()
     f = open(namespace.db)
-    i, iterator = 0, make_counter()
+    i = make_counter()
     for line in f:
         info = line.split(';')
         info[0] = info[0].replace(',', '.')
         info[1] = info[1].replace(',', '.')
-        i += 1
+        i()
         try:
             leaf = Leaf((float(info[0]), float(info[1])), info[2], info[3], info[4], info[5])
             tree.add(leaf)
         except ValueError:
-            print("Value error on line:", i)
+            print("Value error on line:", i())
 
     out = tree.findCord(findXY(namespace.lat, namespace.long), namespace.size * 5, namespace.type)
-    out.sort(key=lambda x: x.x)
+    
     print("\nCoordinats in decart system:",findXY(namespace.lat, namespace.long))
     print("We found %s next entities in the sector:" % (len(out)))
     for el in out:
