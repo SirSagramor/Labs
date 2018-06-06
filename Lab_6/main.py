@@ -13,12 +13,6 @@ def createParser():
     parser.add_argument('--type')
     return parser
 
-# cord - center circle, x1, y1 - dot, R - radius
-def dotInCircle(cord, x1, y1, R):
-    x, y = cord[0], cord[1]
-    if ((x - x1) ** 2 + (y - y1) ** 2) <= R ** 2:
-        return True
-    return False
 
 # check is circle in rect?
 def circleInRect(cordCircle, cordRect, h, w, R):
