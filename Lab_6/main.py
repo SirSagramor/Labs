@@ -4,7 +4,6 @@ import queue
 import sys
 import argparse
 
-
 def createParser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--db', default='ukraine_poi.csv')
@@ -14,14 +13,12 @@ def createParser():
     parser.add_argument('--type')
     return parser
 
-
 # cord - center circle, x1, y1 - dot, R - radius
 def dotInCircle(cord, x1, y1, R):
     x, y = cord[0], cord[1]
     if ((x - x1) ** 2 + (y - y1) ** 2) <= R ** 2:
         return True
     return False
-
 
 # check is circle in rect?
 def circleInRect(cordCircle, cordRect, h, w, R):
@@ -41,24 +38,20 @@ def circleInRect(cordCircle, cordRect, h, w, R):
 
     return cornerDistance_sq <= R ** 2
 
-
 # coordinats in decart system
 def findXY(latitude, longitude):
     return 6371 * math.cos(latitude) * math.cos(longitude), 6371 * math.cos(latitude) * math.sin(longitude)
-
 
 # iterator
 def make_counter():
     i = 0
 
     def counter():  # counter() is a closure
-        nonlocal
-        i
+        nonlocal i
         i += 1
         return i
 
     return counter
-
 
 # Leaf with latitude, longtude and information
 class Leaf:
@@ -76,7 +69,6 @@ class Leaf:
         return 'Leaf: [latitude: %f, longtude: %f, x: %f, y: %f type: %s, subtype: %s, name: %s, adress: %s]' % \
                (self.cord[0], self.cord[1], self.x, self.y, self.type, self.subtype, self.name, self.adress)
 
-
 # Rect Node
 class Node:
     def __init__(self, cord, h, w, depth, n):
@@ -91,15 +83,13 @@ class Node:
         self.divided = False
         self.leafes = []
 
-
 # RTree
 class RTree():
     def __init__(self, cord=(0, 0), h=10000, w=10000, n=100):
         self.root = Node(cord, h, w, 1, n)
-
     def add(self, leaf):
         temp = self.root
-        # тут проверка на то, что нода не начальный корень
+        # here check for the fact that the node is not the initial root
         if temp.children[0]:
             while temp.divided:
                 if temp.depth % 2:
@@ -112,7 +102,7 @@ class RTree():
                         temp = temp.children[0]
                     else:
                         temp = temp.children[1]
-        # если в ноде в которую нужно добавить, больше n точек, делим ее на 2 части, добавляя в эти ноды листья
+        # if there are more than n points in the node in which you want to add, divide it into 2 parts, adding the leaves to these nodes
         if temp.dots == temp.n:
             if temp.depth % 2:
                 temp.leafes.sort(key=lambda x: x.x)
@@ -153,19 +143,16 @@ class RTree():
         else:
             temp.leafes.append(leaf)
             temp.dots += 1
-
-    def findCord(self, cord, R, type=None):
+    def findCord(self ,cord, R, type=None):
         out = []
         q = queue.Queue()
         q.put(self.root)
         while not q.empty():
             temp = q.get()
             if temp.divided:
-                if circleInRect(cord, (temp.children[0].x, temp.children[0].y), temp.children[0].h, temp.children[0].w,
-                                R):
+                if circleInRect(cord, (temp.children[0].x, temp.children[0].y), temp.children[0].h, temp.children[0].w, R):
                     q.put(temp.children[0])
-                if circleInRect(cord, (temp.children[1].x, temp.children[1].y), temp.children[1].h, temp.children[1].w,
-                                R):
+                if circleInRect(cord, (temp.children[1].x, temp.children[1].y), temp.children[1].h, temp.children[1].w, R):
                     q.put(temp.children[1])
             else:
                 if type:
@@ -174,7 +161,6 @@ class RTree():
                     out += [el for el in temp.leafes if dotInCircle(cord, el.x, el.y, R)]
 
         return out
-
 
 if __name__ == '__main__':
 
@@ -197,11 +183,10 @@ if __name__ == '__main__':
             print("Value error on line:", i())
 
     out = tree.findCord(findXY(namespace.lat, namespace.long), namespace.size * 5, namespace.type)
-
-    print("\nCoordinats in decart system:", findXY(namespace.lat, namespace.long))
+    
+    print("\nCoordinats in decart system:",findXY(namespace.lat, namespace.long))
     print("We found %s next entities in the sector:" % (len(out)))
     for el in out:
         print(el)
     print("\n\nTime: %s seconds" % (round(time.time() - start_time, 2)))
-
     f.close()
