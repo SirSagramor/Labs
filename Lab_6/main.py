@@ -189,5 +189,4 @@ if __name__ == '__main__':
     for el in out:
         print(el)
     print("\n\nTime: %s seconds" % (round(time.time() - start_time, 2)))
-
     f.close()
