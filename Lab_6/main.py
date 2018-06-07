@@ -183,7 +183,7 @@ if __name__ == '__main__':
             print("Value error on line:", i())
 
     out = tree.findCord(findXY(namespace.lat, namespace.long), namespace.size * 5, namespace.type)
-    
+
     print("\nCoordinats in decart system:",findXY(namespace.lat, namespace.long))
     print("We found %s next entities in the sector:" % (len(out)))
     for el in out:
